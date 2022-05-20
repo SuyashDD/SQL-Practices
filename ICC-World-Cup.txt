@@ -1,0 +1,33 @@
+Data :
+
+create table icc_world_cup
+(
+Team_1 Varchar(20),
+Team_2 Varchar(20),
+Winner Varchar(20)
+);
+INSERT INTO icc_world_cup values('India','SL','India');
+INSERT INTO icc_world_cup values('SL','Aus','Aus');
+INSERT INTO icc_world_cup values('SA','Eng','Eng');
+INSERT INTO icc_world_cup values('Eng','NZ','NZ');
+INSERT INTO icc_world_cup values('Aus','India','India');
+
+select * from icc_world_cup;
+
+### Q -  Write a query to give team names, No of total matches played by the team, No of matched won and no of matched lose by the team
+
+### Answer -
+SELECT Team_Name
+		, Total_Matches = COUNT(1)
+		, No_Of_Win = SUM(Stat)
+		, No_Of_Losses = (COUNT(1) - SUM(Stat))
+FROM
+(SELECT Team_Name = Team_1
+		, Stat = CASE WHEN Team_1 = Winner THEN 1 ELSE 0 END
+FROM icc_world_cup
+UNION ALL 
+SELECT Team_Name = Team_2
+		, Stat = CASE WHEN Team_2 = Winner THEN 1 ELSE 0 END 
+FROM icc_world_cup) AS A
+GROUP BY Team_Name 
+ORDER BY No_Of_Win DESC
